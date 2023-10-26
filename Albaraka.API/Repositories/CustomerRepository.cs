@@ -1,6 +1,7 @@
 ﻿using Albaraka.API.Data;
 using Albaraka.API.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Albaraka.API.Repositories
 {
@@ -45,6 +46,10 @@ namespace Albaraka.API.Repositories
             _context.Entry(unchangedEntity).CurrentValues.SetValues(customer);
             await _context.SaveChangesAsync();
 
+        }
+        public async Task<Customer> GetByFilter(Expression<Func<Customer, bool>> filter, bool asNoTracking = false)
+        {
+            return asNoTracking ? await _context.Set<Customer>().SingleOrDefaultAsync(filter) : await _context.Set<Customer>().AsNoTracking().SingleOrDefaultAsync(filter);
         }
     }
 }

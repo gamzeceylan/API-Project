@@ -39,7 +39,10 @@ namespace Albaraka.API.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateAsync(Customer customer)
         {
-            if(customer.CustomerNumber.Length ==16 &&  customer.PhoneNumber.Length == 10 && customer.IdentityNumber.Length == 11)
+            // önceden öyle bir kimlik nuraması veya müşteri no kaydedilmiş mi 
+            var data = await _customerRepository.GetByFilter(x => x.IdentityNumber == customer.IdentityNumber || x.CustomerNumber == customer.CustomerNumber);
+
+            if (data == null && customer.CustomerNumber.Length ==16 &&  customer.PhoneNumber.Length == 10 && customer.IdentityNumber.Length == 11)
             {
                 var addedCustomer = await _customerRepository.CreateAsync(customer);
                 return Created(string.Empty, addedCustomer);
